@@ -6,6 +6,7 @@ const rl = readline.createInterface({
 });
 
 let secretNumber = 12;
+let numAttempts = 3;
 
 const checkGuess = (num) => {
   let num1 = Number(num);
@@ -25,8 +26,12 @@ const askGuess = (guess) => {
   if (checkGuess(guess)) {
     console.log("You win!");
     rl.close();
-  } else {
+  } else if (numAttempts > 0) {
     rl.question("Enter a guess: ", askGuess);
+    numAttempts--;
+  } else if (numAttempts === 0) {
+    console.log("You are out of chances");
+    rl.close();
   }
 };
 
@@ -44,9 +49,17 @@ const randomInRange = (min, max) => {
 
 const askRange = (max) => {
   rl.question("Enter a min number: ", (min) => {
-    console.log(`I'm thinking of a number between ${min} and ${max}...`);
+    console.log(
+      `I'm thinking of a number between ${min} and ${max}... however you get ${numAttempts} chances`
+    );
     secretNumber = randomInRange(min, max);
     rl.question("Enter a guess: ", askGuess);
+    numAttempts--;
   });
 };
-rl.question("Enter a max number: ", askRange);
+
+const askLimit = (num) => {
+  numAttempts = num;
+  rl.question("Enter a max number: ", askRange);
+};
+rl.question("Input the number of rounds : ", askLimit);
